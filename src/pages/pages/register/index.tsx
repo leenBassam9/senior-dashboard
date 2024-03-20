@@ -1,6 +1,6 @@
 // ** React Imports
 import { useState, Fragment, MouseEvent, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/router'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
@@ -60,24 +60,10 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 }))
 
 const RegisterPage = () => {
-  // ** States
   const [values, setValues] = useState<State>({
     password: '',
     showPassword: false
   })
-
-  // ** Hook
-  const theme = useTheme()
-
-  // const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-  //   setValues({ ...values, [prop]: event.target.value })
-  // }
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-  }
 
   const [registerValues, setRegisterValues] = useState({
     name: '',
@@ -85,11 +71,17 @@ const RegisterPage = () => {
     password: ''
   })
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault() // Prevent default form submission behavior
-    // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL // Access the environment variable
-    // console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL)
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword })
+  }
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+  }
 
+  const router = useRouter()
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     try {
       const response = await fetch('http://127.0.0.1:8000/api/register', {
         method: 'POST',
@@ -111,6 +103,7 @@ const RegisterPage = () => {
 
       // Handle success (e.g., show message, redirect)
       console.log('Registration successful', data)
+      router.push('/')
     } catch (error) {
       console.error('Registration failed', error)
     }
