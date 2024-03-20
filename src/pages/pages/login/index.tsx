@@ -203,11 +203,7 @@ const LoginPage = () => {
                 flexWrap: 'wrap',
                 justifyContent: 'space-between'
               }}
-            >
-              <Link passHref href='/'>
-                <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
-              </Link>
-            </Box>
+            ></Box>
             <Button
               fullWidth
               size='large'
