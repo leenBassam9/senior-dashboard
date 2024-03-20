@@ -1,5 +1,6 @@
 // ** React Imports
-import { useState, Fragment, ChangeEvent, MouseEvent, ReactNode } from 'react'
+import { useState, Fragment, MouseEvent, ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -7,7 +8,6 @@ import Link from 'next/link'
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -22,10 +22,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
@@ -73,9 +69,9 @@ const RegisterPage = () => {
   // ** Hook
   const theme = useTheme()
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+  // const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
+  //   setValues({ ...values, [prop]: event.target.value })
+  // }
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
   }
@@ -83,12 +79,49 @@ const RegisterPage = () => {
     event.preventDefault()
   }
 
+  const [registerValues, setRegisterValues] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault() // Prevent default form submission behavior
+    // const apiBaseUrl = process.env.REACT_APP_API_BASE_URL // Access the environment variable
+    // console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL)
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: registerValues.name,
+          email: registerValues.email,
+          password: registerValues.password
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      // Handle success (e.g., show message, redirect)
+      console.log('Registration successful', data)
+    } catch (error) {
+      console.error('Registration failed', error)
+    }
+  }
+
   return (
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg
+            {/* <svg
               width={35}
               height={29}
               version='1.1'
@@ -146,7 +179,7 @@ const RegisterPage = () => {
                   </g>
                 </g>
               </g>
-            </svg>
+            </svg> */}
             <Typography
               variant='h6'
               sx={{
@@ -157,40 +190,57 @@ const RegisterPage = () => {
                 fontSize: '1.5rem !important'
               }}
             >
-              {themeConfig.templateName}
+              {themeConfig.DashboardName}
             </Typography>
           </Box>
           <Box sx={{ mb: 6 }}>
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
               Adventure starts here 🚀
             </Typography>
-            <Typography variant='body2'>Make your app management easy and fun!</Typography>
+            <Typography variant='body2'>Boost Your Site with Essential Services.</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='username' label='Username' sx={{ marginBottom: 4 }} />
-            <TextField fullWidth type='email' label='Email' sx={{ marginBottom: 4 }} />
+          <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+            <TextField
+              autoFocus
+              fullWidth
+              id='name'
+              label='Username'
+              sx={{ marginBottom: 4 }}
+              value={registerValues.name}
+              onChange={e => setRegisterValues({ ...registerValues, name: e.target.value })}
+            />
+            <TextField
+              autoFocus
+              fullWidth
+              id='email'
+              label='Email'
+              sx={{ marginBottom: 4 }}
+              value={registerValues.email}
+              onChange={e => setRegisterValues({ ...registerValues, email: e.target.value })}
+            />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-register-password'>Password</InputLabel>
               <OutlinedInput
                 label='Password'
-                value={values.password}
                 id='auth-register-password'
-                onChange={handleChange('password')}
                 type={values.showPassword ? 'text' : 'password'}
+                value={registerValues.password}
+                onChange={e => setRegisterValues({ ...registerValues, password: e.target.value })}
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton
-                      edge='end'
+                      aria-label='toggle password visibility'
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
-                      aria-label='toggle password visibility'
+                      edge='end'
                     >
-                      {values.showPassword ? <EyeOutline fontSize='small' /> : <EyeOffOutline fontSize='small' />}
+                      {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
                     </IconButton>
                   </InputAdornment>
                 }
               />
             </FormControl>
+
             <FormControlLabel
               control={<Checkbox />}
               label={
@@ -216,31 +266,6 @@ const RegisterPage = () => {
                   <LinkStyled>Sign in instead</LinkStyled>
                 </Link>
               </Typography>
-            </Box>
-            <Divider sx={{ my: 5 }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Facebook sx={{ color: '#497ce2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Twitter sx={{ color: '#1da1f2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Github
-                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
-                  />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Google sx={{ color: '#db4437' }} />
-                </IconButton>
-              </Link>
             </Box>
           </form>
         </CardContent>

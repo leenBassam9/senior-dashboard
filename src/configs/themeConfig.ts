@@ -1,12 +1,10 @@
-// ** MUI Imports
 import { PaletteMode } from '@mui/material'
 
-// ** Types
 import { ContentWidth } from 'src/@core/layouts/types'
 
 type ThemeConfig = {
   mode: PaletteMode
-  templateName: string
+  DashboardName: string
   routingLoader: boolean
   disableRipple: boolean
   navigationSize: number
@@ -16,8 +14,7 @@ type ThemeConfig = {
 }
 
 const themeConfig: ThemeConfig = {
-  // ** Layout Configs
-  templateName: 'Materio' /* App Name */,
+  DashboardName: 'Welcome' /* App Name */,
   mode: 'light' /* light | dark */,
   contentWidth: 'boxed' /* full | boxed */,
 
