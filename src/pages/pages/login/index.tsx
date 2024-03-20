@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, useState, ReactNode } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -8,8 +8,6 @@ import { useRouter } from 'next/router'
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
@@ -20,13 +18,8 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
-import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
@@ -35,14 +28,6 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Demo Imports
-import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
-
-interface State {
-  password: string
-  showPassword: boolean
-}
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -55,34 +40,52 @@ const LinkStyled = styled('a')(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  '& .MuiFormControlLabel-label': {
-    fontSize: '0.875rem',
-    color: theme.palette.text.secondary
-  }
-}))
+interface LoginState {
+  email: string
+  password: string
+  showPassword: boolean
+}
 
 const LoginPage = () => {
-  // ** State
-  const [values, setValues] = useState<State>({
-    password: '',
-    showPassword: false
-  })
+  const [loginState, setLoginState] = useState<LoginState>({ email: '', password: '', showPassword: false })
 
-  // ** Hook
-  const theme = useTheme()
   const router = useRouter()
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
+  const handleChange = (prop: keyof LoginState) => (event: ChangeEvent<HTMLInputElement>) => {
+    setLoginState({ ...loginState, [prop]: event.target.value })
+  }
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
   }
 
   const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
+    setLoginState({ ...loginState, showPassword: !loginState.showPassword })
   }
 
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: loginState.email,
+          password: loginState.password
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`)
+      }
+
+      router.push('/')
+    } catch (error) {
+      console.error('Login failed', error)
+    }
   }
 
   return (
@@ -90,7 +93,7 @@ const LoginPage = () => {
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg
+            {/* <svg
               width={35}
               height={29}
               version='1.1'
@@ -148,7 +151,7 @@ const LoginPage = () => {
                   </g>
                 </g>
               </g>
-            </svg>
+            </svg> */}
             <Typography
               variant='h6'
               sx={{
@@ -159,43 +162,48 @@ const LoginPage = () => {
                 fontSize: '1.5rem !important'
               }}
             >
-              {themeConfig.templateName}
+              {themeConfig.DashboardName}
             </Typography>
           </Box>
           <Box sx={{ mb: 6 }}>
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
-              Welcome to {themeConfig.templateName}! 👋🏻
+              Welcome to {themeConfig.DashboardName}!👋🏻
             </Typography>
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+          <form noValidate autoComplete='off' onSubmit={handleSubmit}>
             <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
                 label='Password'
-                value={values.password}
+                value={loginState.password}
                 id='auth-login-password'
                 onChange={handleChange('password')}
-                type={values.showPassword ? 'text' : 'password'}
+                type={loginState.showPassword ? 'text' : 'password'}
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton
                       edge='end'
-                      onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       aria-label='toggle password visibility'
                     >
-                      {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
+                      {loginState.showPassword ? <EyeOutline /> : <EyeOffOutline />}
                     </IconButton>
                   </InputAdornment>
                 }
               />
             </FormControl>
             <Box
-              sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
+              sx={{
+                mb: 4,
+                mt: 4,
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between'
+              }}
             >
-              <FormControlLabel control={<Checkbox />} label='Remember Me' />
               <Link passHref href='/'>
                 <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
               </Link>
@@ -219,35 +227,10 @@ const LoginPage = () => {
                 </Link>
               </Typography>
             </Box>
-            <Divider sx={{ my: 5 }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Facebook sx={{ color: '#497ce2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Twitter sx={{ color: '#1da1f2' }} />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Github
-                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
-                  />
-                </IconButton>
-              </Link>
-              <Link href='/' passHref>
-                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                  <Google sx={{ color: '#db4437' }} />
-                </IconButton>
-              </Link>
-            </Box>
           </form>
         </CardContent>
       </Card>
-      <FooterIllustrationsV1 />
+      {/* <FooterIllustrationsV1 /> */}
     </Box>
   )
 }

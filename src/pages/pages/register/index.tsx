@@ -65,12 +65,6 @@ const RegisterPage = () => {
     showPassword: false
   })
 
-  const [registerValues, setRegisterValues] = useState({
-    name: '',
-    email: '',
-    password: ''
-  })
-
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword })
   }
@@ -79,6 +73,12 @@ const RegisterPage = () => {
   }
 
   const router = useRouter()
+
+  const [registerValues, setRegisterValues] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

@@ -14,7 +14,7 @@ type ThemeConfig = {
 }
 
 const themeConfig: ThemeConfig = {
-  DashboardName: 'Welcome' /* App Name */,
+  DashboardName: 'Service Provider' /* App Name */,
   mode: 'light' /* light | dark */,
   contentWidth: 'boxed' /* full | boxed */,
 
