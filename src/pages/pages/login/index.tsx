@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 
@@ -59,15 +59,12 @@ const LoginPage = () => {
     event.preventDefault()
   }
 
-  const handleClickShowPassword = () => {
-    setLoginState({ ...loginState, showPassword: !loginState.showPassword })
-  }
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/login', {
+        
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -23,6 +23,16 @@ import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
 
 const Dashboard = () => {
+  // const router = useRouter() // Use useRouter hook here
+
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem('authToken')
+  //   if (!authToken) {
+  //     // If not authenticated, redirect to login page
+  //     router.push('/login')
+  //   }
+  // }, [router])
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -87,9 +97,7 @@ const Dashboard = () => {
         <Grid item xs={12} md={6} lg={4}>
           <SalesByCountries />
         </Grid>
-        <Grid item xs={12} md={12} lg={8}>
-          <DepositWithdraw />
-        </Grid>
+
         <Grid item xs={12}>
           <Table />
         </Grid>

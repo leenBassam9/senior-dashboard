@@ -13,7 +13,7 @@ import Typography, { TypographyProps } from '@mui/material/Typography'
 import { Settings } from 'src/@core/context/settingsContext'
 
 // ** Configs
-// import themeConfig from 'src/configs/themeConfig'
+import themeConfig from 'src/configs/themeConfig'
 
 interface Props {
   hidden: boolean
@@ -51,8 +51,6 @@ const VerticalNavHeader = (props: Props) => {
   // ** Props
   const { verticalNavMenuBranding: userVerticalNavMenuBranding } = props
 
-  // ** Hooks
-  // const theme = useTheme()
 
   return (
     <MenuHeaderWrapper className='nav-header' sx={{ pl: 6 }}>
@@ -121,8 +119,8 @@ const VerticalNavHeader = (props: Props) => {
               </g>
             </svg> */}
             <HeaderTitle variant='h6' sx={{ ml: 3 }}>
-              {/* {themeConfig.templateName} */}
-              Dashboard
+              {themeConfig.DashboardName}
+              {/* Dashboard */}
             </HeaderTitle>
           </StyledLink>
         </Link>

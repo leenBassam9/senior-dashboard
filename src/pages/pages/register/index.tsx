@@ -82,6 +82,9 @@ const RegisterPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!registerValues.name && !registerValues.email && !registerValues.password) {
+      alert('please fill in all filed')
+    }
     try {
       const response = await fetch('http://127.0.0.1:8000/api/register', {
         method: 'POST',
@@ -103,6 +106,8 @@ const RegisterPage = () => {
 
       // Handle success (e.g., show message, redirect)
       console.log('Registration successful', data)
+      localStorage.setItem('authToken', data.token) // Save token
+
       router.push('/')
     } catch (error) {
       console.error('Registration failed', error)
