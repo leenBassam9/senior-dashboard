@@ -1,7 +1,4 @@
-// ** React Imports
-import { useState, Fragment } from 'react'
-
-// ** MUI Imports
+import React, { useState, useEffect, Fragment } from 'react'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
@@ -13,119 +10,98 @@ import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import TableContainer from '@mui/material/TableContainer'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
-// ** Icons Imports
-import ChevronUp from 'mdi-material-ui/ChevronUp'
-import ChevronDown from 'mdi-material-ui/ChevronDown'
+const Users = () => {
+  const [userData, setUserData] = useState<any[]>([])
 
-const createData = (name: string, calories: number, fat: number, carbs: number, protein: number, price: number) => {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3
-      },
-      {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/users', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+          }
+        })
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`)
+        }
+        const data = await response.json()
+        setUserData(data)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
       }
-    ]
+    }
+
+    fetchUserData()
+  }, [])
+
+  const toggleRowCollapse = (index: number) => {
+    const newData = [...userData]
+    newData[index].open = !newData[index].open
+    setUserData(newData)
   }
-}
 
-const Row = (props: { row: ReturnType<typeof createData> }) => {
-  // ** Props
-  const { row } = props
-
-  // ** State
-  const [open, setOpen] = useState<boolean>(false)
-
-  return (
-    <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
-            {open ? <ChevronUp /> : <ChevronDown />}
-          </IconButton>
-        </TableCell>
-        <TableCell component='th' scope='row'>
-          {row.name}
-        </TableCell>
-        <TableCell align='right'>{row.calories}</TableCell>
-        <TableCell align='right'>{row.fat}</TableCell>
-        <TableCell align='right'>{row.carbs}</TableCell>
-        <TableCell align='right'>{row.protein}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell colSpan={6} sx={{ py: '0 !important' }}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
-            <Box sx={{ m: 2 }}>
-              <Typography variant='h6' gutterBottom component='div'>
-                History
-              </Typography>
-              <Table size='small' aria-label='purchases'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align='right'>Amount</TableCell>
-                    <TableCell align='right'>Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map(historyRow => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component='th' scope='row'>
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align='right'>{historyRow.amount}</TableCell>
-                      <TableCell align='right'>{Math.round(historyRow.amount * row.price * 100) / 100}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </Fragment>
-  )
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5)
-]
-
-const TableCollapsible = () => {
   return (
     <TableContainer component={Paper}>
       <Table aria-label='collapsible table'>
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align='right'>Calories</TableCell>
-            <TableCell align='right'>Fat (g)</TableCell>
-            <TableCell align='right'>Carbs (g)</TableCell>
-            <TableCell align='right'>Protein (g)</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell align='right'>Admin</TableCell>
+            <TableCell align='right'>Created At</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <Row key={row.name} row={row} />
+          {userData.map((row, index) => (
+            <Fragment key={row.id}>
+              <TableRow>
+                <TableCell>
+                  <IconButton aria-label='expand row' size='small' onClick={() => toggleRowCollapse(index)}>
+                    {row.open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </IconButton>
+                </TableCell>
+                <TableCell component='th' scope='row'>
+                  {row.name}
+                </TableCell>
+                <TableCell>{row.email}</TableCell>
+                <TableCell align='right'>{row.is_admin ? 'Yes' : 'No'}</TableCell>
+                <TableCell align='right'>{row.created_at}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+                  <Collapse in={row.open} timeout='auto' unmountOnExit>
+                    <Box margin={1}>
+                      <Typography variant='h6' gutterBottom component='div'>
+                        Services
+                      </Typography>
+                      <Table size='small' aria-label='purchases'>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Service ID</TableCell>
+                            <TableCell>Usage</TableCell>
+                            <TableCell>Expiry Date</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {row.service &&
+                            row.service.map((service: any) => (
+                              <TableRow key={service.id}>
+                                <TableCell>{service.service_id}</TableCell>
+                                <TableCell>{service.usage}</TableCell>
+                                <TableCell>{service.expiry_date}</TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </Box>
+                  </Collapse>
+                </TableCell>
+              </TableRow>
+            </Fragment>
           ))}
         </TableBody>
       </Table>
@@ -133,4 +109,4 @@ const TableCollapsible = () => {
   )
 }
 
-export default TableCollapsible
+export default Users

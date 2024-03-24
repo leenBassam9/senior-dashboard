@@ -28,6 +28,7 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
+import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -47,7 +48,11 @@ interface LoginState {
 }
 
 const LoginPage = () => {
-  const [loginState, setLoginState] = useState<LoginState>({ email: '', password: '', showPassword: false })
+  const [loginState, setLoginState] = useState<LoginState>({
+    email: '',
+    password: '',
+    showPassword: false
+  })
 
   const router = useRouter()
 
@@ -60,29 +65,39 @@ const LoginPage = () => {
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log(loginState.email)
+    console.log(loginState.password)
     event.preventDefault()
 
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/login', {
-        
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: loginState.email,
-          password: loginState.password
-        })
+    fetch('http://127.0.0.1:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: loginState.email,
+        password: loginState.password
       })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`)
+        }
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
+        return response.json()
+      })
+      .then((data: any) => {
+        console.log(data)
+        if (data.error != null) {
+          throw new Error('invalid data')
+        }
+        localStorage.setItem('token', data.token)
 
-      router.push('/')
-    } catch (error) {
-      console.error('Login failed', error)
-    }
+        router.push('/')
+      })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
   return (
@@ -169,7 +184,15 @@ const LoginPage = () => {
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+            <TextField
+              autoFocus
+              fullWidth
+              id='email'
+              label='Email'
+              sx={{ marginBottom: 4 }}
+              value={loginState.email}
+              onChange={e => setLoginState({ ...loginState, email: e.target.value })}
+            />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -206,7 +229,9 @@ const LoginPage = () => {
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-              onClick={() => router.push('/')}
+              type='submit'
+
+              // onClick={() => router.push('/')}
             >
               Login
             </Button>
@@ -223,7 +248,7 @@ const LoginPage = () => {
           </form>
         </CardContent>
       </Card>
-      {/* <FooterIllustrationsV1 /> */}
+      <FooterIllustrationsV1 />
     </Box>
   )
 }

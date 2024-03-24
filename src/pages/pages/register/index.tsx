@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState, Fragment, MouseEvent, ReactNode } from 'react'
+
 import { useRouter } from 'next/router'
 
 // ** Next Imports
@@ -82,36 +83,35 @@ const RegisterPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!registerValues.name && !registerValues.email && !registerValues.password) {
-      alert('please fill in all filed')
-    }
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: registerValues.name,
-          email: registerValues.email,
-          password: registerValues.password
-        })
+    fetch('http://127.0.0.1:8000/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: registerValues.name,
+        email: registerValues.email,
+        password: registerValues.password
       })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`)
+        }
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-
-      // Handle success (e.g., show message, redirect)
-      console.log('Registration successful', data)
-      localStorage.setItem('authToken', data.token) // Save token
-
-      router.push('/')
-    } catch (error) {
-      console.error('Registration failed', error)
-    }
+        return response.json()
+      })
+      .then((data: any) => {
+        console.log(data)
+        if (data.error != null) {
+          throw new Error('invalid data')
+        }
+        localStorage.setItem('token', data.token)
+        router.push('/')
+      })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
   return (
