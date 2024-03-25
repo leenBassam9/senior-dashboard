@@ -1,6 +1,6 @@
 import Login from 'mdi-material-ui/Login'
 
-// import CubeOutline from 'mdi-material-ui/CubeOutline'
+import CubeOutline from 'mdi-material-ui/CubeOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
 import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
@@ -52,13 +52,13 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Manage Users',
       icon: AccountMultiple,
       path: '/manage-users'
+    },
+    {
+      icon: CubeOutline,
+      title: 'Form Layouts',
+      path: '/form-layouts'
     }
 
-    // {
-    //   icon: CubeOutline,
-    //   title: 'Form Layouts',
-    //   path: '/form-layouts'
-    // },
     // {
     //   title: 'Error',
     //   icon: AlertCircleOutline,

@@ -13,8 +13,17 @@ import TableContainer from '@mui/material/TableContainer'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
+// import Button from '@mui/material/Button'
+// import AddIcon from '@mui/icons-material/Add'
+
 const Users = () => {
   const [userData, setUserData] = useState<any[]>([])
+
+  // const [isFormOpen, setIsFormOpen] = useState(false)
+
+  // const handleOpenForm = () => {
+  //   setIsFormOpen(true)
+  // }
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,11 +42,10 @@ const Users = () => {
         console.error('Error fetching user data:', error)
       }
     }
-
     fetchUserData()
   }, [])
 
-  const toggleRowCollapse = (index: number) => {
+  const toggleRowCollapse = (index: any) => {
     const newData = [...userData]
     newData[index].open = !newData[index].open
     setUserData(newData)
@@ -51,8 +59,8 @@ const Users = () => {
             <TableCell />
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
-            <TableCell align='right'>Admin</TableCell>
-            <TableCell align='right'>Created At</TableCell>
+            <TableCell align='right'>is Admin</TableCell>
+            <TableCell align='right'>Joind in </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,7 +77,7 @@ const Users = () => {
                 </TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell align='right'>{row.is_admin ? 'Yes' : 'No'}</TableCell>
-                <TableCell align='right'>{row.created_at}</TableCell>
+                <TableCell align='right'>{row.created_at.split('T')[0]}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
@@ -81,7 +89,7 @@ const Users = () => {
                       <Table size='small' aria-label='purchases'>
                         <TableHead>
                           <TableRow>
-                            <TableCell>Service ID</TableCell>
+                            <TableCell>Service name</TableCell>
                             <TableCell>Usage</TableCell>
                             <TableCell>Expiry Date</TableCell>
                           </TableRow>
@@ -90,7 +98,7 @@ const Users = () => {
                           {row.service &&
                             row.service.map((service: any) => (
                               <TableRow key={service.id}>
-                                <TableCell>{service.service_id}</TableCell>
+                                <TableCell>{service.service_name}</TableCell>
                                 <TableCell>{service.usage}</TableCell>
                                 <TableCell>{service.expiry_date}</TableCell>
                               </TableRow>
