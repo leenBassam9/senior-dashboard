@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import TableCollapsible from 'src/views/tables/TableCollapsible'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
-import FormLayoutsBasic from 'src/views/form-layouts/FormLayoutsBasic'
+import UserForm from 'src/views/form-layouts/UserForm'
 
 const ManageUsers = () => {
   const [showForm, setShowForm] = useState(false)
@@ -32,7 +32,7 @@ const ManageUsers = () => {
         </Button>
         <Card>
           {/* <CardHeader title='Users' titleTypographyProps={{ variant: 'h6' }} /> */}
-          {showForm ? <FormLayoutsBasic /> : <TableCollapsible />}
+          {showForm ? <UserForm /> : <TableCollapsible />}
         </Card>
       </Grid>
     </Grid>

@@ -20,18 +20,31 @@ const TrophyImg = styled('img')({
 
 const AchievementCard = () => {
   const theme = useTheme()
-  const [monthlySales, setMonthlySales] = useState<number | null>(null)
+  const [monthlyUsage, setMonthlyUsage] = useState<number | null>(null)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/mounthsellers')
-      .then(response => response.json())
-      .then(data => {
-        setMonthlySales(data.sales)
-      })
-      .catch(error => {
-        console.error('Error retrieving monthly sales:', error)
-      })
+    const authToken = localStorage.getItem('token')
+    setToken(authToken)
   }, [])
+
+  useEffect(() => {
+    if (token) {
+      fetch('http://127.0.0.1:8000/api/services_total_usage', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          const totalUsage = parseInt(data.total_usage)
+          setMonthlyUsage(totalUsage)
+        })
+        .catch(error => {
+          console.error('Error retrieving monthly usage:', error)
+        })
+    }
+  }, [token])
 
   const imageSrc = theme.palette.mode === 'light' ? 'triangle-light.png' : 'triangle-dark.png'
 
@@ -40,10 +53,10 @@ const AchievementCard = () => {
       <CardContent>
         <Typography variant='h6'>Congratulations! 🎉</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-          Best seller of the month
+          Total Usage of the month
         </Typography>
-        <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          {monthlySales ? `$${monthlySales.toFixed(1)}k` : 'Loading...'}
+        <Typography variant='h5' sx={{ my: 2 }}>
+          {monthlyUsage !== null ? monthlyUsage : 'Loading...'} !
         </Typography>
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />

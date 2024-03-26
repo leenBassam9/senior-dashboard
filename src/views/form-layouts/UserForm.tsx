@@ -19,7 +19,7 @@ import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 
-const FormLayoutsBasic = () => {
+const UserForm = () => {
   const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
@@ -142,4 +142,4 @@ const FormLayoutsBasic = () => {
   )
 }
 
-export default FormLayoutsBasic
+export default UserForm
