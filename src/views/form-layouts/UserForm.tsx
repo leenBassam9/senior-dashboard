@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -20,8 +20,18 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 
 const UserForm = () => {
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
+  interface LoginState {
+    email: string
+    password: string
+    showPassword: boolean
+  }
+  const [loginState, setLoginState] = useState<LoginState>({
+    email: '',
+    password: '',
+    showPassword: false
+  })
+  const handleMouseDownPassword = () => {
+    setLoginState({ ...loginState, showPassword: !loginState.showPassword })
   }
 
   interface AddState {
@@ -105,7 +115,7 @@ const UserForm = () => {
                   value={formData.password}
                   id='auth-login-password'
                   onChange={handleChange('password')}
-                  type={formData.showPassword ? 'text' : 'password'}
+                  type={loginState.showPassword ? 'text' : 'password'} // Use loginState.showPassword here
                   endAdornment={
                     <InputAdornment position='end'>
                       <IconButton
@@ -113,7 +123,7 @@ const UserForm = () => {
                         onMouseDown={handleMouseDownPassword}
                         aria-label='toggle password visibility'
                       >
-                        {formData.showPassword ? <EyeOutline /> : <EyeOffOutline />}
+                        {loginState.showPassword ? <EyeOutline /> : <EyeOffOutline />}{' '}
                       </IconButton>
                     </InputAdornment>
                   }

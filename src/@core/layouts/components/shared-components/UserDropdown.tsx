@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
- import LogoutVariant from 'mdi-material-ui/LogoutVariant'
+import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 // ** Styled Components
@@ -30,7 +30,7 @@ const UserDropdown = () => {
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
-   const router = useRouter()
+  const router = useRouter()
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
@@ -45,7 +45,9 @@ const UserDropdown = () => {
     }
     setAnchorEl(null)
   }
-
+  const handleProfileClick = () => {
+    handleDropdownClose('/account-settings')
+  }
   const styles = {
     py: 2,
     px: 4,
@@ -102,7 +104,7 @@ const UserDropdown = () => {
           </Box>
         </Box>
         <Divider sx={{ mt: 0, mb: 1 }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
+        <MenuItem sx={{ p: 0 }} onClick={handleProfileClick}>
           <Box sx={styles}>
             <AccountOutline sx={{ marginRight: 2 }} />
             Profile

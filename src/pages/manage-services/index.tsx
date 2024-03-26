@@ -3,8 +3,7 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import TableBasic from 'src/views/tables/TableBasic'
+import ServicesTable from 'src/views/tables/ServiceTable'
 import { useState } from 'react'
 import ServiceForm from 'src/views/form-layouts/ServiceForm'
 
@@ -13,6 +12,10 @@ const ManageServices = () => {
 
   const handleOpenForm = () => {
     setShowForm(true)
+  }
+
+  const handleCloseForm = () => {
+    setShowForm(false)
   }
 
   return (
@@ -26,16 +29,12 @@ const ManageServices = () => {
         <Button
           variant='contained'
           size='small'
-          startIcon={<AddIcon />}
           style={{ margin: '10px' }}
-          onClick={handleOpenForm}
+          onClick={showForm ? handleCloseForm : handleOpenForm}
         >
-          Add Service
-        </Button>
-        <Card>
-          {/* <CardHeader title='Users' titleTypographyProps={{ variant: 'h6' }} /> */}
-          {showForm ? <ServiceForm /> : <TableBasic />}
-        </Card>
+          {showForm ? 'Cancel' : 'Add Service'}
+        </Button>{' '}
+        <Card>{showForm ? <ServiceForm /> : <ServicesTable />}</Card>
       </Grid>
     </Grid>
   )

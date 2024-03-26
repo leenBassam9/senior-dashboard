@@ -2,9 +2,8 @@ import React, { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
-import TableCollapsible from 'src/views/tables/TableCollapsible'
+import UsersTable from 'src/views/tables/UserTable'
 import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
 import UserForm from 'src/views/form-layouts/UserForm'
 
 const ManageUsers = () => {
@@ -12,6 +11,10 @@ const ManageUsers = () => {
 
   const handleOpenForm = () => {
     setShowForm(true)
+  }
+
+  const handleCloseForm = () => {
+    setShowForm(false)
   }
 
   return (
@@ -24,16 +27,12 @@ const ManageUsers = () => {
         <Button
           variant='contained'
           size='small'
-          startIcon={<AddIcon />}
           style={{ margin: '10px' }}
-          onClick={handleOpenForm}
+          onClick={showForm ? handleCloseForm : handleOpenForm}
         >
-          Add User
+          {showForm ? 'Cancel' : 'Add User'}
         </Button>
-        <Card>
-          {/* <CardHeader title='Users' titleTypographyProps={{ variant: 'h6' }} /> */}
-          {showForm ? <UserForm /> : <TableCollapsible />}
-        </Card>
+        <Card>{showForm ? <UserForm /> : <UsersTable />}</Card>
       </Grid>
     </Grid>
   )
