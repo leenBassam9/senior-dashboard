@@ -8,11 +8,10 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
-import TrendingUp from 'mdi-material-ui/TrendingUp'
 import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
 import CellphoneLink from 'mdi-material-ui/CellphoneLink'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
+import { ThemeColor } from 'src/@core/layouts/types'
 
 interface DataType {
   stats: number | null
@@ -22,18 +21,6 @@ interface DataType {
 }
 
 const salesData: DataType[] = [
-  {
-    stats: null,
-    title: 'Sales',
-    color: 'primary',
-    icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
-  },
-  {
-    stats: null,
-    title: 'Customers',
-    color: 'success',
-    icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
-  },
   {
     stats: null,
     title: 'Users',
@@ -59,9 +46,11 @@ const StatisticsCard = () => {
 
   useEffect(() => {
     if (token) {
-      fetch('http://127.0.0.1:8000/api/services_total_usage', {
+      fetch('http://127.0.0.1:8000/api/services_count', {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
         .then(response => response.json())
@@ -94,8 +83,7 @@ const StatisticsCard = () => {
           </Avatar>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography variant='caption'>{item.title}</Typography>
-            {monthlyUsage !== null ? monthlyUsage : 'Loading...'} !
-            <Typography variant='h6'>{item.stats !== null ? item.stats : 'Loading...'}</Typography>
+            {monthlyUsage}!<Typography variant='h6'>{item.stats !== null ? item.stats : 'Loading...'}</Typography>
           </Box>
         </Box>
       </Grid>

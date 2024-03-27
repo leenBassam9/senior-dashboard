@@ -1,5 +1,6 @@
 // ** React Imports
 import { ChangeEvent, useState } from 'react'
+import { apiService } from 'src/api/api-service'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -59,7 +60,8 @@ const UserForm = () => {
     fetch('http://127.0.0.1:8000/api/users', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({
         name: formData.name,
@@ -80,8 +82,10 @@ const UserForm = () => {
         if (data.error != null) {
           throw new Error('invalid data')
         }
-
-        //  localStorage.setItem('token', data.token)
+        apiService
+          .getUsers(true)
+          .then(() => {})
+          .catch(console.log)
       })
       .catch(error => {
         console.error(error)

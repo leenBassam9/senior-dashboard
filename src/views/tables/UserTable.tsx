@@ -13,6 +13,7 @@ import TableContainer from '@mui/material/TableContainer'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { apiService } from 'src/api/api-service'
 
 interface User {
   id: number
@@ -34,21 +35,7 @@ const UsersTable = () => {
   const [userData, setUserData] = useState<User[]>([])
 
   const fetchUserData = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/users', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
-        }
-      })
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
-      const data = await response.json()
-      const usersWithOpenState = data.map((user: User) => ({ ...user, open: false })) // Initialize with open state
-      setUserData(usersWithOpenState)
-    } catch (error) {
-      console.error('Error fetching user data:', error)
-    }
+    apiService.getUsers().then(setUserData).catch(console.log)
   }
 
   useEffect(() => {

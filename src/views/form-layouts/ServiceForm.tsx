@@ -31,7 +31,8 @@ const ServiceForm = () => {
       const response = await fetch('http://127.0.0.1:8000/api/services', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData)
       })
@@ -79,7 +80,6 @@ const ServiceForm = () => {
                   justifyContent: 'space-between'
                 }}
               >
-                
                 <Button type='submit' variant='contained' size='large'>
                   Add
                 </Button>
