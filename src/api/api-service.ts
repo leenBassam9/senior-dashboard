@@ -29,12 +29,12 @@ class ApiService {
     })
   }
 
-  fetchUsers(): Promise<any> {
+  private fetchUsers(): Promise<any> {
     return new Promise((res, rej) => {
       fetch('http://127.0.0.1:8000/api/users', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
         .then(response => {
@@ -45,10 +45,33 @@ class ApiService {
           return response.json()
         })
         .then(data => {
-          res(data.map((user: User) => ({ ...user, open: false }))) // Initialize with open state
+          res(data.map((user: User) => ({ ...user, open: false })))
         })
         .catch(error => {
           rej(error)
+        })
+    })
+  }
+
+  deleteUser(userId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`)
+          }
+
+          this.users = this.users.filter(user => user.id !== userId)
+          resolve()
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error)
+          reject(error)
         })
     })
   }

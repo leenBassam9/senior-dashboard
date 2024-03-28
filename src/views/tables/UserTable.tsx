@@ -34,8 +34,16 @@ interface Service {
 const UsersTable = () => {
   const [userData, setUserData] = useState<User[]>([])
 
-  const fetchUserData = async () => {
+  const fetchUserData = () => {
     apiService.getUsers().then(setUserData).catch(console.log)
+  }
+  const deleteUser = (userId: number) => {
+    apiService
+      .deleteUser(userId)
+      .then(() => {
+        fetchUserData()
+      })
+      .catch(console.log)
   }
 
   useEffect(() => {
@@ -45,24 +53,6 @@ const UsersTable = () => {
   const toggleRowCollapse = (index: number) => {
     const newData = userData.map((user, idx) => (idx === index ? { ...user, open: !user.open } : user))
     setUserData(newData)
-  }
-
-  const deleteUser = async (userId: number) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you store the token in localStorage
-        }
-      })
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`)
-      }
-      const newData = userData.filter(user => user.id !== userId) // Remove deleted user from state
-      setUserData(newData)
-    } catch (error) {
-      console.error('Error deleting user:', error)
-    }
   }
 
   return (
