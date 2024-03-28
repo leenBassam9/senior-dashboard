@@ -31,10 +31,10 @@ class ApiService {
   updateService(serviceId: number, updateData: { name?: string; description?: string; price?: number }): Promise<void> {
     return new Promise((resolve, reject) => {
       fetch(`http://127.0.0.1:8000/api/services/${serviceId}`, {
-        method: 'PUT', // Use 'PUT' if your API requires replacing the entire resource
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming the token is stored in localStorage
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(updateData)
       })
@@ -76,7 +76,7 @@ class ApiService {
   }
 
   deleteService(serviceId: number): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((res, rej) => {
       fetch(`http://127.0.0.1:8000/api/services/${serviceId}`, {
         method: 'DELETE',
         headers: {
@@ -88,11 +88,10 @@ class ApiService {
             throw new Error(`Error: ${response.statusText}`)
           }
           this.services = this.services.filter(service => service.id !== serviceId)
-          resolve()
+          res()
         })
         .catch(error => {
-          console.error('Error deleting user:', error)
-          reject(error)
+          rej(error)
         })
     })
   }

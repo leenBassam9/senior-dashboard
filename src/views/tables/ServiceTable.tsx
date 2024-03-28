@@ -17,13 +17,15 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { serviceApi } from 'src/api/service-api' // Ensure this is correctly imported
-import { Service } from 'src/api/schemas/service'
+import { serviceApi } from 'src/api/service-api' // Ensure correct import path
+import { Service } from 'src/api/schemas/service' // Ensure correct import path
 
 const ServiceTable = () => {
   const [serviceData, setServiceData] = useState<Service[]>([])
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editServiceData, setEditServiceData] = useState({ id: -1, name: '', description: '', price: 0 })
+  const [editServiceData, setEditServiceData] = useState<Service>({ id: -1, name: '', description: '', price: 0 })
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [deleteServiceId, setDeleteServiceId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchServiceData()
@@ -33,23 +35,38 @@ const ServiceTable = () => {
     serviceApi.getService().then(setServiceData).catch(console.log)
   }
 
-  const deleteService = (serviceId: any) => {
-    serviceApi.deleteService(serviceId).then(fetchServiceData).catch(console.log)
+  const handleDeleteClick = (serviceId: number) => {
+    setDeleteServiceId(serviceId)
+    setIsDeleteDialogOpen(true)
   }
 
-  const handleEditClick = (service: any) => {
+  const confirmDeleteService = () => {
+    if (deleteServiceId !== null) {
+      serviceApi
+        .deleteService(deleteServiceId)
+        .then(() => {
+          fetchServiceData()
+          setIsDeleteDialogOpen(false)
+        })
+        .catch(console.log)
+    }
+  }
+
+  const handleEditClick = (service: Service) => {
     setEditServiceData(service)
     setIsEditModalOpen(true)
   }
 
   const updateService = () => {
-    serviceApi
-      .updateService(editServiceData.id, editServiceData)
-      .then(() => {
-        setIsEditModalOpen(false)
-        fetchServiceData()
-      })
-      .catch(console.log)
+    if (editServiceData.id >= 0) {
+      serviceApi
+        .updateService(editServiceData.id, editServiceData)
+        .then(() => {
+          setIsEditModalOpen(false)
+          fetchServiceData()
+        })
+        .catch(console.log)
+    }
   }
 
   return (
@@ -76,7 +93,7 @@ const ServiceTable = () => {
                   <IconButton aria-label='edit' onClick={() => handleEditClick(row)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton aria-label='delete' onClick={() => deleteService(row.id)}>
+                  <IconButton aria-label='delete' onClick={() => handleDeleteClick(row.id)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -86,6 +103,19 @@ const ServiceTable = () => {
         </Table>
       </TableContainer>
 
+      {/* Confirmation Dialog for Deletion */}
+      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>Are you sure you want to delete this service?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDeleteService} color='error'>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Editing Dialog */}
       <Dialog open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <DialogTitle>Edit Service</DialogTitle>
         <DialogContent>
