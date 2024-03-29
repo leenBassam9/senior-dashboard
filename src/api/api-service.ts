@@ -1,9 +1,13 @@
 import { User } from './schemas/user'
+import { Event } from './event'
 
 class ApiService {
   private static instance: ApiService
   private users: User[]
-
+  public onUsersUpdated: Event<User[]>
+  constructor() {
+    this.onUsersUpdated = new Event<User[]>()
+  }
   public static getInstance(): ApiService {
     if (!ApiService.instance) {
       ApiService.instance = new ApiService()
@@ -18,6 +22,7 @@ class ApiService {
         this.fetchUsers()
           .then(users => {
             this.users = users
+            this.onUsersUpdated.emit(this.users)
             res(users)
           })
           .catch(error => {
@@ -72,6 +77,38 @@ class ApiService {
         .catch(error => {
           console.error('Error deleting user:', error)
           reject(error)
+        })
+    })
+  }
+  updateUser(userId: number, userData: Partial<User>): Promise<void> {
+    return new Promise((res, rej) => {
+      fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
+        method: 'PATCH', // or 'PUT' if replacing the resource entirely
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure you're correctly handling authentication
+        },
+        body: JSON.stringify(userData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+
+          return response.json() // You might want to return some data here or just resolve
+        })
+        .then(() => {
+          this.fetchUsers() // Optionally, refresh the users list if the update doesn't return the updated list
+            .then(users => {
+              this.users = users
+              this.onUsersUpdated.emit(this.users)
+              res()
+            })
+            .catch(fetchError => rej(fetchError))
+        })
+        .catch(error => {
+          console.error('Error updating user:', error)
+          rej(error)
         })
     })
   }

@@ -1,9 +1,13 @@
 import { Service } from './schemas/service'
+import { Event } from './event'
 
 class ApiService {
   private static instance: ApiService
   private services: Service[]
-
+  public onServicesUpdated: Event<Service[]>
+  constructor() {
+    this.onServicesUpdated = new Event<Service[]>()
+  }
   public static getInstance(): ApiService {
     if (!ApiService.instance) {
       ApiService.instance = new ApiService()
@@ -18,6 +22,8 @@ class ApiService {
         this.fetchServices()
           .then(services => {
             this.services = services
+            this.onServicesUpdated.emit(this.services)
+
             res(services)
           })
           .catch(error => {
@@ -29,7 +35,7 @@ class ApiService {
     })
   }
   updateService(serviceId: number, updateData: { name?: string; description?: string; price?: number }): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((res, rej) => {
       fetch(`http://127.0.0.1:8000/api/services/${serviceId}`, {
         method: 'PUT',
         headers: {
@@ -42,11 +48,18 @@ class ApiService {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
           }
-          resolve()
+          res()
+        })
+        .then(() => {
+          this.fetchServices().then(services => {
+            this.services = services
+            this.onServicesUpdated.emit(this.services)
+            res()
+          })
         })
         .catch(error => {
           console.error('Error updating service:', error)
-          reject(error)
+          rej(error)
         })
     })
   }

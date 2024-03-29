@@ -52,8 +52,7 @@ const UserForm = () => {
     setFormData({ ...formData, [prop]: event.target.value })
   }
 
-  // const authToken = localStorage.getItem('token')
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log(formData.email)
     console.log(formData.password)
     event.preventDefault()

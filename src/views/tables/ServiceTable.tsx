@@ -23,18 +23,25 @@ import { Service } from 'src/api/schemas/service' // Ensure correct import path
 const ServiceTable = () => {
   const [serviceData, setServiceData] = useState<Service[]>([])
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editServiceData, setEditServiceData] = useState<Service>({ id: -1, name: '', description: '', price: 0 })
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [deleteServiceId, setDeleteServiceId] = useState<number | null>(null)
+  const [editServiceData, setEditServiceData] = useState<Service>({
+    id: -1,
+    name: '',
+    description: '',
+    price: 0,
+    usage: 0,
+    expiry_date: ''
+  })
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     fetchServiceData()
   }, [])
 
   const fetchServiceData = () => {
+    serviceApi.onServicesUpdated.subscribe(setServiceData)
     serviceApi.getService().then(setServiceData).catch(console.log)
   }
-
   const handleDeleteClick = (serviceId: number) => {
     setDeleteServiceId(serviceId)
     setIsDeleteDialogOpen(true)
