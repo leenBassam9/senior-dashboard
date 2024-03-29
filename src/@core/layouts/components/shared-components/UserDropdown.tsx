@@ -1,23 +1,17 @@
-// ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
-
-// ** Next Import
+import React, { useState, useEffect, Fragment } from 'react'
 import { useRouter } from 'next/router'
-
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-
 import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
+import { styled } from '@mui/material/styles'
 
-// ** Styled Components
+// Styled components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,
   height: 8,
@@ -27,40 +21,48 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 
 const UserDropdown = () => {
-  // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
+  const [userDetails, setUserDetails] = useState({
+    name: 'Loading...',
+    avatar: '/images/avatars/1.png', // Default or placeholder avatar path
+    role: 'Admin' // Default role
+  })
 
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchUserDetails = () => {
+      // Example fetching user details from local storage
+      const userName = localStorage.getItem('userName') // Assuming user's name is stored in local storage
+
+      // Update state with user details
+      if (userName) {
+        setUserDetails(prevDetails => ({ ...prevDetails, name: userName || 'Admin' }))
+      }
+    }
+
+    fetchUserDetails()
+  }, [])
 
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleLogout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userId')
     handleDropdownClose('/pages/login')
   }
+
   const handleDropdownClose = (url?: string) => {
     if (url) {
       router.push(url)
     }
     setAnchorEl(null)
   }
+
   const handleProfileClick = () => {
     handleDropdownClose('/account-settings')
-  }
-  const styles = {
-    py: 2,
-    px: 4,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    color: 'text.primary',
-    textDecoration: 'none',
-    '& svg': {
-      fontSize: '1.375rem',
-      color: 'text.secondary'
-    }
   }
 
   return (
@@ -73,10 +75,10 @@ const UserDropdown = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Avatar
-          alt='John Doe'
+          alt={userDetails.name}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
-          src='/images/avatars/1.png'
+          src={userDetails.avatar}
         />
       </Badge>
       <Menu
@@ -94,27 +96,30 @@ const UserDropdown = () => {
               badgeContent={<BadgeContentSpan />}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar alt={userDetails.name} src={userDetails.avatar} sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', marginLeft: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>John Doe</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{userDetails.name}</Typography>
               <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                Admin
+                {userDetails.role}
               </Typography>
             </Box>
           </Box>
         </Box>
-        <Divider sx={{ mt: 0, mb: 1 }} />
+        <Divider sx={{ my: 1 }} />
         <MenuItem sx={{ p: 0 }} onClick={handleProfileClick}>
-          <Box sx={styles}>
+          <Box
+            sx={{ py: 2, px: 4, display: 'flex', alignItems: 'center', color: 'text.primary', textDecoration: 'none' }}
+          >
             <AccountOutline sx={{ marginRight: 2 }} />
             Profile
           </Box>
         </MenuItem>
-
         <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
-          <LogoutVariant sx={{ marginRight: 2, fontSize: '1.375rem', color: 'text.secondary' }} />
-          Logout
+          <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.primary', textDecoration: 'none' }}>
+            <LogoutVariant sx={{ marginRight: 2 }} />
+            Logout
+          </Box>
         </MenuItem>
       </Menu>
     </Fragment>

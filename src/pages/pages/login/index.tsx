@@ -88,6 +88,7 @@ const LoginPage = () => {
         }
         localStorage.setItem('token', data.token)
         localStorage.setItem('userId', data.user.id)
+        localStorage.setItem('userName', data.user.name)
 
         router.push('/')
       })
