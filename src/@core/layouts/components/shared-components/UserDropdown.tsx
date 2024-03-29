@@ -37,6 +37,7 @@ const UserDropdown = () => {
   }
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('userId')
     handleDropdownClose('/pages/login')
   }
   const handleDropdownClose = (url?: string) => {

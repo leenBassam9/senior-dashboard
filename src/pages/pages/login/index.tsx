@@ -87,6 +87,7 @@ const LoginPage = () => {
           throw new Error('invalid data')
         }
         localStorage.setItem('token', data.token)
+        localStorage.setItem('userId', data.user.id)
 
         router.push('/')
       })
