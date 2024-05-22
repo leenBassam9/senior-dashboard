@@ -44,7 +44,7 @@ const UserDropdown = () => {
     fetchUserDetails()
   }, [])
 
-  const handleDropdownOpen = (event: SyntheticEvent) => {
+  const handleDropdownOpen = (event: any) => {
     setAnchorEl(event.currentTarget)
   }
 

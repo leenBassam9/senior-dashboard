@@ -36,34 +36,40 @@ const salesData: DataType[] = [
 ]
 
 const StatisticsCard = () => {
-  const [monthlyUsage, setMonthlyUsage] = useState<number | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [userCount, setUserCount] = useState<number | null>(null)
+  const [serviceCount, setServiceCount] = useState<number | null>(null)
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token')
-    setToken(authToken)
-  }, [])
-
-  useEffect(() => {
-    if (token) {
-      fetch('http://127.0.0.1:8000/api/services_count', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+    fetch('http://127.0.0.1:8000/api/users_count', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserCount(data)
       })
-        .then(response => response.json())
-        .then(data => {
-          const totalUsage = parseInt(data.total_usage)
-          setMonthlyUsage(totalUsage)
-        })
-        .catch(error => {
-          console.error('Error retrieving monthly usage:', error)
-        })
-    }
-  }, [token])
+      .catch(error => {
+        console.error('Error retrieving User Count:', error)
+      })
 
+    fetch('http://127.0.0.1:8000/api/services_count', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/api',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setServiceCount(data)
+      })
+      .catch(error => {
+        console.error('Error retrieving Service Count:', error)
+      })
+  }, [])
   const renderStats = () => {
     return salesData.map((item: DataType, index: number) => (
       <Grid item xs={12} sm={3} key={index}>
@@ -83,7 +89,7 @@ const StatisticsCard = () => {
           </Avatar>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography variant='caption'>{item.title}</Typography>
-            {monthlyUsage}!<Typography variant='h6'>{item.stats !== null ? item.stats : 'Loading...'}</Typography>
+            {item.title === 'Users' ? userCount : serviceCount}
           </Box>
         </Box>
       </Grid>
