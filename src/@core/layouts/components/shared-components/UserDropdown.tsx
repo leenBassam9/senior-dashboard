@@ -11,7 +11,6 @@ import LogoutVariant from 'mdi-material-ui/LogoutVariant'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
 import { styled } from '@mui/material/styles'
 
-// Styled components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
   width: 8,
   height: 8,
@@ -24,18 +23,16 @@ const UserDropdown = () => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const [userDetails, setUserDetails] = useState({
     name: 'Loading...',
-    avatar: '/images/avatars/1.png', // Default or placeholder avatar path
-    role: 'Admin' // Default role
+    avatar: '/images/avatars/1.png',
+    role: 'Admin'
   })
 
   const router = useRouter()
 
   useEffect(() => {
     const fetchUserDetails = () => {
-      // Example fetching user details from local storage
-      const userName = localStorage.getItem('userName') // Assuming user's name is stored in local storage
+      const userName = localStorage.getItem('userName')
 
-      // Update state with user details
       if (userName) {
         setUserDetails(prevDetails => ({ ...prevDetails, name: userName || 'Admin' }))
       }

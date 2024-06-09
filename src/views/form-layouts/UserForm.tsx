@@ -1,8 +1,6 @@
-// ** React Imports
 import { ChangeEvent, useState } from 'react'
 import { apiService } from 'src/api/api-service'
 
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -52,7 +50,7 @@ const UserForm = () => {
     setFormData({ ...formData, [prop]: event.target.value })
   }
 
-   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     console.log(formData.email)
     console.log(formData.password)
     event.preventDefault()
@@ -83,7 +81,9 @@ const UserForm = () => {
         }
         apiService
           .getUsers(true)
-          .then(() => {})
+          .then(() => {
+            console.log('')
+          })
           .catch(console.log)
       })
       .catch(error => {

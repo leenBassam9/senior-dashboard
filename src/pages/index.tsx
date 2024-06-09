@@ -10,12 +10,12 @@ import { useEffect } from 'react'
 const Dashboard = () => {
   const router = useRouter()
 
-  useEffect(() => {
-    const authToken = localStorage.getItem('token')
-    if (!authToken) {
-      router.push('/pages/login')
-    }
-  }, [router])
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem('token')
+  //   if (!authToken) {
+  //     router.push('/pages/login')
+  //   }
+  // }, [router])
 
   return (
     <ApexChartWrapper>

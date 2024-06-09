@@ -1,6 +1,5 @@
 import { ChangeEvent, useState, ReactNode } from 'react'
 
-// import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import Box from '@mui/material/Box'
@@ -19,23 +18,14 @@ import InputAdornment from '@mui/material/InputAdornment'
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
-// ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
-// ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 
-// ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
-
-// const LinkStyled = styled('a')(({ theme }) => ({
-//   fontSize: '0.875rem',
-//   textDecoration: 'none',
-//   color: theme.palette.primary.main
-// }))
 
 interface LoginState {
   email: string

@@ -1,4 +1,3 @@
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
@@ -6,14 +5,11 @@ import IconButton from '@mui/material/IconButton'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import InputAdornment from '@mui/material/InputAdornment'
 
-// ** Icons Imports
 import Menu from 'mdi-material-ui/Menu'
 import Magnify from 'mdi-material-ui/Magnify'
 
-// ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
 
-// ** Components
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 
@@ -25,10 +21,8 @@ interface Props {
 }
 
 const AppBarContent = (props: Props) => {
-  // ** Props
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
-  // ** Hook
   const hiddenSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'))
 
   return (
