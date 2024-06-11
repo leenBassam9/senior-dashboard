@@ -1,117 +1,117 @@
-import { User } from './schemas/user'
-import { Event } from './event'
+import { User } from "./schemas/user";
+import { Event } from "./event";
 
 class ApiService {
-  private static instance: ApiService
-  private users: User[]
-  public onUsersUpdated: Event<User[]>
+  private static instance: ApiService;
+  private users: User[];
+  public onUsersUpdated: Event<User[]>;
   constructor() {
-    this.onUsersUpdated = new Event<User[]>()
+    this.onUsersUpdated = new Event<User[]>();
   }
   public static getInstance(): ApiService {
     if (!ApiService.instance) {
-      ApiService.instance = new ApiService()
+      ApiService.instance = new ApiService();
     }
 
-    return ApiService.instance
+    return ApiService.instance;
   }
 
   getUsers(update = false): Promise<User[]> {
     return new Promise((res, rej) => {
       if (this.users == null || update) {
         this.fetchUsers()
-          .then(users => {
-            this.users = users
-            this.onUsersUpdated.emit(this.users)
-            res(users)
+          .then((users) => {
+            this.users = users;
+            this.onUsersUpdated.emit(this.users);
+            res(users);
           })
-          .catch(error => {
-            rej(error)
-          })
+          .catch((error) => {
+            rej(error);
+          });
       } else {
-        res(this.users)
+        res(this.users);
       }
-    })
+    });
   }
 
   private fetchUsers(): Promise<any> {
     return new Promise((res, rej) => {
-      fetch('http://127.0.0.1:8000/api/users', {
-        method: 'GET',
+      fetch("http://127.0.0.1:8000/api/users", {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
-            rej(response.statusText)
+            rej(response.statusText);
           }
 
-          return response.json()
+          return response.json();
         })
-        .then(data => {
-          res(data.map((user: User) => ({ ...user, open: false })))
+        .then((data) => {
+          res(data.map((user: User) => ({ ...user, open: false })));
         })
-        .catch(error => {
-          rej(error)
-        })
-    })
+        .catch((error) => {
+          rej(error);
+        });
+    });
   }
 
   deleteUser(userId: number): Promise<void> {
     return new Promise((resolve, reject) => {
       fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`)
+            throw new Error(`Error: ${response.statusText}`);
           }
 
-          this.users = this.users.filter(user => user.id !== userId)
-          resolve()
+          this.users = this.users.filter((user) => user.id !== userId);
+          resolve();
         })
-        .catch(error => {
-          console.error('Error deleting user:', error)
-          reject(error)
-        })
-    })
+        .catch((error) => {
+          console.error("Error deleting user:", error);
+          reject(error);
+        });
+    });
   }
   updateUser(userId: number, userData: Partial<User>): Promise<void> {
     return new Promise((res, rej) => {
       fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure you're correctly handling authentication
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       })
-        .then(response => {
+        .then((response) => {
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          return response.json()
+          return response.json();
         })
         .then(() => {
           this.fetchUsers()
-            .then(users => {
-              this.users = users
-              this.onUsersUpdated.emit(this.users)
-              res()
+            .then((users) => {
+              this.users = users;
+              this.onUsersUpdated.emit(this.users);
+              res();
             })
-            .catch(fetchError => rej(fetchError))
+            .catch((fetchError) => rej(fetchError));
         })
-        .catch(error => {
-          console.error('Error updating user:', error)
-          rej(error)
-        })
-    })
+        .catch((error) => {
+          console.error("Error updating user:", error);
+          rej(error);
+        });
+    });
   }
 }
 
-export const apiService = ApiService.getInstance()
+export const apiService = ApiService.getInstance();
