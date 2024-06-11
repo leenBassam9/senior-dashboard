@@ -122,17 +122,8 @@ const StatisticsCard = () => {
   return (
     <Card>
       <CardHeader
-        title="Statistics Card"
-        action={
-          <IconButton
-            size="small"
-            aria-label="settings"
-            className="card-more-options"
-            sx={{ color: "text.secondary" }}
-          >
-            <DotsVertical />
-          </IconButton>
-        }
+        title="Statistics
+        Card"
         subheader={
           <Typography variant="body2">
             <Box
