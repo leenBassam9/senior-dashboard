@@ -1,22 +1,22 @@
-import { PaletteMode } from '@mui/material'
+import { PaletteMode } from "@mui/material";
 
-import { ContentWidth } from 'src/@core/layouts/types'
+import { ContentWidth } from "src/@core/layouts/types";
 
 type ThemeConfig = {
-  mode: PaletteMode
-  DashboardName: string
-  routingLoader: boolean
-  disableRipple: boolean
-  navigationSize: number
-  menuTextTruncate: boolean
-  contentWidth: ContentWidth
-  responsiveFontSizes: boolean
-}
+  mode: PaletteMode;
+  DashboardName: string;
+  routingLoader: boolean;
+  disableRipple: boolean;
+  navigationSize: number;
+  menuTextTruncate: boolean;
+  contentWidth: ContentWidth;
+  responsiveFontSizes: boolean;
+};
 
 const themeConfig: ThemeConfig = {
-  DashboardName: 'Service Provider',
-  mode: 'light',
-  contentWidth: 'boxed',
+  DashboardName: "Service Station",
+  mode: "light",
+  contentWidth: "boxed",
 
   routingLoader: true,
 
@@ -24,7 +24,7 @@ const themeConfig: ThemeConfig = {
   navigationSize: 260,
 
   responsiveFontSizes: true,
-  disableRipple: false
-}
+  disableRipple: false,
+};
 
-export default themeConfig
+export default themeConfig;
