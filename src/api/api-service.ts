@@ -83,7 +83,7 @@ class ApiService {
   updateUser(userId: number, userData: Partial<User>): Promise<void> {
     return new Promise((res, rej) => {
       fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
-        method: 'PATCH', // or 'PUT' if replacing the resource entirely
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}` // Ensure you're correctly handling authentication
@@ -95,10 +95,10 @@ class ApiService {
             throw new Error(`HTTP error! status: ${response.status}`)
           }
 
-          return response.json() // You might want to return some data here or just resolve
+          return response.json()
         })
         .then(() => {
-          this.fetchUsers() // Optionally, refresh the users list if the update doesn't return the updated list
+          this.fetchUsers()
             .then(users => {
               this.users = users
               this.onUsersUpdated.emit(this.users)
