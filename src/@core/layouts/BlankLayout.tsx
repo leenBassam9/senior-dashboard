@@ -18,8 +18,7 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     padding: theme.spacing(5)
   },
 
-  // For V2 Blank layout pages
-  '& .content-right': {
+   '& .content-right': {
     display: 'flex',
     minHeight: '100vh',
     overflowX: 'hidden',
