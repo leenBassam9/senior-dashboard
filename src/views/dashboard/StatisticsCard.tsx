@@ -11,6 +11,7 @@ import CardContent from "@mui/material/CardContent";
 import CurrencyUsd from "mdi-material-ui/CurrencyUsd";
 import DotsVertical from "mdi-material-ui/DotsVertical";
 import CellphoneLink from "mdi-material-ui/CellphoneLink";
+import Earth from "mdi-material-ui/Earth";
 import { ThemeColor } from "src/@core/layouts/types";
 
 interface DataType {
@@ -88,7 +89,7 @@ const StatisticsCard = () => {
       stats: topCountry?.count || null,
       title: topCountry ? `Top Country: ${topCountry.location}` : "Top Country",
       color: "success",
-      icon: <CurrencyUsd sx={{ fontSize: "1.75rem" }} />,
+      icon: <Earth sx={{ fontSize: "1.75rem" }} />,
     },
   ];
 

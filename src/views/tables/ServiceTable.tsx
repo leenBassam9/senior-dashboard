@@ -135,7 +135,6 @@ const ServiceTable = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Editing Dialog */}
       <Dialog open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <DialogTitle>Edit Service</DialogTitle>
         <DialogContent>
